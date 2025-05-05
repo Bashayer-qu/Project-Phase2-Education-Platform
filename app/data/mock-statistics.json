@@ -1,0 +1,14 @@
+{
+    "userRoles": {
+      "student": 10,
+      "instructor": 5,
+      "admin": 1
+    },
+    "topCourses": [
+      "Programming Concepts",
+      "JavaScript Basics",
+      "Science"
+    ],
+    "failingStudents": 3
+  }
+  
