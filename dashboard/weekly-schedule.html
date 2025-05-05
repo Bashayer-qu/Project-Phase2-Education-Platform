@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Schedule</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <h1>Weekly Class Schedule</h1>
+        <button onclick="logout()">Logout</button>
+    </header>
+
+    <main>
+        <table style="margin: auto; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid black; padding: 8px;">Course</th>
+                    <th style="border: 1px solid black; padding: 8px;">Instructor</th>
+                    <th style="border: 1px solid black; padding: 8px;">Day</th>
+                    <th style="border: 1px solid black; padding: 8px;">Time</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleTable"></tbody>
+        </table>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const admin = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!admin || admin.role !== "admin") {
+                alert("Access Denied! Redirecting to login...");
+                window.location.href = "../login/login.html";
+                return;
+            }
+
+            fetch("../courses.json")
+                .then(res => res.json())
+                .then(courses => {
+                    const tableBody = document.getElementById("scheduleTable");
+                    courses.forEach(course => {
+                        if (course.schedule && course.assignedInstructor !== "To be assigned") {
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                                <td style="border: 1px solid black; padding: 8px;">${course.name}</td>
+                                <td style="border: 1px solid black; padding: 8px;">${course.assignedInstructor}</td>
+                                <td style="border: 1px solid black; padding: 8px;">${course.schedule.day}</td>
+                                <td style="border: 1px solid black; padding: 8px;">${course.schedule.time}</td>
+                            `;
+                            tableBody.appendChild(tr);
+                        }
+                    });
+                });
+        });
+
+        function logout() {
+            sessionStorage.clear();
+            alert("You have been logged out.");
+            window.location.href = "../login/login.html";
+        }
+    </script>
+</body>
+
+</html>

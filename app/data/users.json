@@ -1,0 +1,256 @@
+[
+  {
+    "name": "Alreem",
+    "surname": "Ali",
+    "username": "Alreem_Ali",
+    "password": "Password@123",
+    "role": "student",
+    "completedCourses": [
+      {
+        "name": "Math",
+        "grade": "A"
+      }
+    ],
+    "inProgressCourses": [
+      {
+        "name": "Programming Concepts"
+      },
+      {
+        "name": "Science"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "Operating Systems"
+      }
+    ]
+  },
+  {
+    "name": "Noor",
+    "surname": "Ahmed",
+    "username": "Noor_Ahmed",
+    "password": "Password@111",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "Databases 101"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "JavaScript Basics"
+      }
+    ]
+  },
+  {
+    "name": "Maryam",
+    "surname": "Saad",
+    "username": "Maryam_Saad",
+    "password": "Password@211",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "Databases 101"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "JavaScript Basics"
+      }
+    ]
+  },
+  {
+    "name": "Noura",
+    "surname": "Majid",
+    "username": "Noura_Majid",
+    "password": "Password@212",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "Operating Systems"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "Programming Concepts"
+      }
+    ]
+  },
+  {
+    "name": "Talal",
+    "surname": "Faisal",
+    "username": "Talal_Faisal",
+    "password": "Password@213",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "JavaScript Basics"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "Databases 101"
+      }
+    ]
+  },
+  {
+    "name": "Aisha",
+    "surname": "Jassim",
+    "username": "Aisha_Jassim",
+    "password": "Password@214",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "Programming Concepts"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "English"
+      }
+    ]
+  },
+  {
+    "name": "Khalid",
+    "surname": "Nader",
+    "username": "Khalid_Nader",
+    "password": "Password@215",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "Science"
+      }
+    ],
+    "pendingCourses": [
+      {
+        "name": "Math"
+      }
+    ]
+  },
+  {
+    "name": "Fahad",
+    "surname": "Khalid",
+    "username": "Fahad_Khalid",
+    "password": "Password@112",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "JavaScript Basics"
+      }
+    ],
+    "pendingCourses": []
+  },
+  {
+    "name": "Omar",
+    "surname": "Hassan",
+    "username": "Omar_Hassan",
+    "password": "Password@114",
+    "role": "student",
+    "completedCourses": [],
+    "inProgressCourses": [
+      {
+        "name": "Operating Systems"
+      }
+    ],
+    "pendingCourses": []
+  },
+  {
+    "name": "Aysha",
+    "surname": "Hamad",
+    "username": "Aysha_Hamad",
+    "password": "Password@124",
+    "role": "instructor",
+    "completedCourses": [],
+    "assignedCourses": [
+      {
+        "courseName": "Programming Concepts"
+      },
+      {
+        "courseName": "Science"
+      }
+    ]
+  },
+  {
+    "name": "Hamad",
+    "surname": "Salem",
+    "username": "Hamad_Salem",
+    "password": "Password@126",
+    "role": "instructor",
+    "completedCourses": [],
+    "assignedCourses": [
+      {
+        "courseName": "JavaScript Basics"
+      },
+      {
+        "courseName": "Operating Systems"
+      }
+    ]
+  },
+  {
+    "name": "Fatima",
+    "surname": "Yousef",
+    "username": "Fatima_Yousef",
+    "password": "Password@127",
+    "role": "instructor",
+    "completedCourses": [],
+    "assignedCourses": [
+      {
+        "courseName": "Databases 101"
+      }
+    ]
+  },
+  {
+    "name": "Maha",
+    "surname": "Al-Naimi",
+    "username": "Maha_AlNaimi",
+    "password": "Password@128",
+    "role": "instructor",
+    "completedCourses": [],
+    "assignedCourses": [
+      {
+        "courseName": "Web Security Basics"
+      }
+    ]
+  },
+  {
+    "name": "Salem",
+    "surname": "Al-Ali",
+    "username": "Salem_AlAli",
+    "password": "Password@129",
+    "role": "instructor",
+    "completedCourses": [],
+    "assignedCourses": [
+      {
+        "courseName": "Networking Essentials"
+      }
+    ]
+  },
+  {
+    "name": "Lina",
+    "surname": "Fawaz",
+    "username": "Lina_Fawaz",
+    "password": "Password@130",
+    "role": "instructor",
+    "completedCourses": [],
+    "assignedCourses": [
+      {
+        "courseName": "AI Fundamentals"
+      }
+    ]
+  },
+  {
+    "name": "Sara",
+    "surname": "Saleh",
+    "username": "Sara_Saleh",
+    "password": "Password@125",
+    "role": "admin",
+    "completedCourses": []
+  }
+]

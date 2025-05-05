@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <h1 id="instructorName"></h1>
+        <button onclick="logout()">Logout</button>
+    </header>
+
+    <main>
+        <h2>Your Teaching Schedule</h2>
+        <ul id="scheduleList"></ul>
+
+        <h2>Your Courses & Grade Submission</h2>
+        <div id="courseContainer"></div>
+    </main>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const instructor = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!instructor || instructor.role !== "instructor") {
+                alert("Access Denied! Redirecting to login...");
+                window.location.href = "../login/login.html";
+                return;
+            }
+            document.getElementById("instructorName").innerHTML = "Welcome, " + instructor.name;
+
+            // Load users and courses
+            fetch("../users.json")
+                .then(res => res.json())
+                .then(users => {
+                    fetch("../courses.json")
+                        .then(res => res.json())
+                        .then(courses => {
+                            sessionStorage.setItem("allUsers", JSON.stringify(users));
+                            displaySchedule(courses, instructor);
+                            displayCourses(users, instructor, courses);
+                        });
+                });
+        });
+
+        // Display teaching schedule
+        function displaySchedule(courses, instructor) {
+            const scheduleList = document.getElementById("scheduleList");
+            const myCourses = courses.filter(course => course.assignedInstructor === instructor.name + " " + instructor.surname);
+
+            if (myCourses.length === 0) {
+                scheduleList.innerHTML = "<li>No scheduled courses yet.</li>";
+            } else {
+
+                myCourses.forEach(course => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                <strong>${course.name}</strong><br>
+                ${course.schedule.day}<br>
+                ${course.schedule.time}
+            `;
+                    scheduleList.appendChild(li);
+
+                });
+            }
+        }
+
+
+        // Display grade submission table
+        function displayCourses(users, instructor, courses) {
+            const courseDiv = document.getElementById("courseContainer");
+            courseDiv.innerHTML = "";
+
+            instructor.assignedCourses.forEach(courseObj => {
+                const courseName = courseObj.courseName;
+                const courseID = courseObj.id;
+                const courseSection = document.createElement("div");
+                courseSection.innerHTML = `<h3>${courseName}</h3>`;
+
+                const studentList = users.filter(user => user.role === "student" &&
+                    (user.inProgressCourses.find(c => c.name === courseName) !== undefined));
+
+                if (studentList.length === 0) {
+                    courseSection.innerHTML += "<p>No students for this course.</p>";
+                } else {
+                    const table = document.createElement("table");
+                    table.style.margin = "auto";
+                    table.innerHTML = `
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px;">Student Name</th>
+                            <th style="border: 1px solid black; padding: 8px;">Grade</th>
+                        </tr>
+                    `;
+
+                    studentList.forEach(student => {
+                        const tr = document.createElement("tr");
+                        tr.style.border = "1px solid black";
+                        tr.innerHTML = `
+                            <td style="border: 1px solid black; padding: 8px;">${student.name} ${student.surname}</td>
+                        `;
+                        tr.innerHTML += `
+                                <td style="border: 1px solid black; padding: 8px;">
+                                    <input type="text" id="grade-${student.username}-${courseName}" placeholder="Grade" style="width: 60px;">
+                                    <button onclick="submitGrade('${student.username}', '${courseName}')">Submit</button>
+                                </td>
+                            `;
+
+                        table.appendChild(tr);
+                    });
+
+                    courseSection.appendChild(table);
+                }
+
+                courseDiv.appendChild(courseSection);
+            });
+        }
+
+        function submitGrade(username, courseName) {
+            const gradeInput = document.getElementById(`grade-${username}-${courseName}`);
+            const grade = gradeInput.value.trim();
+            if (!grade) {
+                alert("Please enter a grade.");
+                return;
+            }
+
+            let users = JSON.parse(sessionStorage.getItem("allUsers"));
+            const user = users.find(u => u.username === username);
+
+            const courseIndex = user.inProgressCourses.findIndex(c => c.name === courseName);
+            if (courseIndex !== -1) {
+                user.inProgressCourses.splice(courseIndex, 1);
+            }
+
+            user.completedCourses.push({ name: courseName, grade: grade });
+
+            sessionStorage.setItem("allUsers", JSON.stringify(users));
+            alert(`Grade submitted for ${user.name}: ${grade}`);
+
+            // Refresh only grade table, not full page
+            fetch("../courses.json")
+                .then(res => res.json())
+                .then(courses => {
+                    const instructor = JSON.parse(sessionStorage.getItem("loggedInUser"));
+                    displayCourses(users, instructor, courses);
+                });
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            alert("You have been logged out.");
+            window.location.href = "../login/login.html";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <h1>Welcome, <span id="studentName"></span></h1>
+        <button onclick="logout()">Logout</button>
+    </header>
+
+    <main>
+        <p id="dateToday"></p>
+
+        <button onclick="window.location.href='courses.html'">View Available Courses</button>
+        <button onclick="window.location.href='learning-path.html'">View Learning Path</button>
+
+        <p style="margin-top: 40px; color: grey;">No announcements at this time.</p>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!user || user.role !== "student") {
+                alert("Access Denied! Redirecting to login...");
+                window.location.href = "../login/login.html";
+                return;
+            }
+
+            document.getElementById("studentName").textContent = user.name;
+
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById("dateToday").textContent = "Today is " + formattedDate;
+        });
+
+        function logout() {
+            sessionStorage.clear();
+            alert("You have been logged out.");
+            window.location.href = "../login/login.html";
+        }
+    </script>
+</body>
+
+</html>

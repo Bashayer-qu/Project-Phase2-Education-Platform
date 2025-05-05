@@ -1,0 +1,157 @@
+[
+    {
+        "id": 1,
+        "name": "JavaScript Basics",
+        "category": "Programming",
+        "prerequisites": [],
+        "openForRegistration": true,
+        "assignedInstructor": "Hamad Salem",
+        "capacity": 30,
+        "enrolled": 5,
+        "schedule": {
+            "day": "Sun Tue Thu",
+            "time": "10:00 - 10:50 AM"
+        }
+    },
+    {
+        "id": 2,
+        "name": "Databases 101",
+        "category": "Databases",
+        "prerequisites": [
+            "Math"
+        ],
+        "openForRegistration": false,
+        "assignedInstructor": "To be assigned",
+        "capacity": 25,
+        "enrolled": 0,
+        "schedule": {
+            "day": "Mon Wed",
+            "time": "1:00 - 1:50 PM"
+        }
+    },
+    {
+        "id": 3,
+        "name": "Operating Systems",
+        "category": "Systems",
+        "prerequisites": [
+            "Programming Concepts"
+        ],
+        "openForRegistration": false,
+        "assignedInstructor": "To be assigned",
+        "capacity": 20,
+        "enrolled": 0,
+        "schedule": {
+            "day": "Sun Tue Thu",
+            "time": "9:00 - 9:50 AM"
+        }
+    },
+    {
+        "id": 4,
+        "name": "Programming Concepts",
+        "category": "Programming",
+        "prerequisites": [
+            "JavaScript Basics"
+        ],
+        "openForRegistration": true,
+        "assignedInstructor": "Aysha Hamad",
+        "capacity": 20,
+        "enrolled": 15,
+        "schedule": {
+            "day": "Mon Wed",
+            "time": "2:00 - 2:50 PM"
+        }
+    },
+    {
+        "id": 5,
+        "name": "Web Security Basics",
+        "category": "Cybersecurity",
+        "prerequisites": [
+            "Operating Systems"
+        ],
+        "openForRegistration": true,
+        "assignedInstructor": "Maha Al-Naimi",
+        "capacity": 20,
+        "enrolled": 0,
+        "schedule": {
+            "day": "Sun Tue",
+            "time": "11:00 – 12:00 PM"
+        }
+    },
+    {
+        "id": 6,
+        "name": "Networking Essentials",
+        "category": "Networking",
+        "prerequisites": [
+            "Operating Systems"
+        ],
+        "openForRegistration": true,
+        "assignedInstructor": "Salem Al-Ali",
+        "capacity": 20,
+        "enrolled": 0,
+        "schedule": {
+            "day": "Tue Thu",
+            "time": "9:00 – 10:30 AM"
+        }
+    },
+    {
+        "id": 7,
+        "name": "AI Fundamentals",
+        "category": "AI",
+        "prerequisites": [
+            "Math",
+            "Programming Concepts"
+        ],
+        "openForRegistration": true,
+        "assignedInstructor": "Lina Fawaz",
+        "capacity": 20,
+        "enrolled": 0,
+        "schedule": {
+            "day": "Thu",
+            "time": "10:00 – 12:00 PM"
+        }
+    },
+    {
+        "id": 8,
+        "name": "Science",
+        "category": "Science",
+        "prerequisites": [],
+        "openForRegistration": true,
+        "assignedInstructor": "Aysha Hamad",
+        "capacity": 20,
+        "enrolled": 15,
+        "schedule": {
+            "day": "Mon Wed",
+            "time": "5:00 - 5:50 PM"
+        }
+    },
+    {
+        "id": 9,
+        "name": "Operating Systems",
+        "category": "Systems",
+        "prerequisites": [],
+        "openForRegistration": true,
+        "assignedInstructor": "Hamad Salem",
+        "capacity": 30,
+        "enrolled": 5,
+        "schedule": {
+            "day": "Sun Tue Thu",
+            "time": "11:00 - 11:50 AM"
+        }
+    },
+    {
+        "id": 10,
+        "name": "Database 101",
+        "category": "Databases",
+        "prerequisites": [
+            "Programming Concepts"
+        ],
+        "openForRegistration": true,
+        "assignedInstructor": "Fatima Yousef",
+        "capacity": 20,
+        "enrolled": 0,
+        "schedule": {
+            "day": "Tue Thu",
+            "time": "10:00 – 12:00 PM"
+        }
+    }
+]

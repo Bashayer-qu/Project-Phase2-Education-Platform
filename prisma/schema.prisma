@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model Course {
+  id                  Int              @id @default(autoincrement())
+  name                String
+  category            String
+  prerequisites       Prerequisite[]
+  openForRegistration Boolean
+  assignedInstructor  String
+  capacity            Int
+  enrolled            Int
+  schedule            Schedule[]
+}
+
+model Schedule {
+  id        Int     @id @default(autoincrement())
+  day       String
+  time      String
+  courseId  Int
+  course    Course  @relation(fields: [courseId], references: [id])
+}
+
+model Prerequisite {
+  id        Int     @id @default(autoincrement())
+  name      String
+  courseId  Int
+  course    Course  @relation(fields: [courseId], references: [id])
+}
+
+model User {
+  name              String
+  surname           String
+  username          String              @id @default(cuid())
+  password          String
+  role              String
+  completedCourses  CompletedCourse[]
+  inProgressCourses InProgressCourse[]
+  pendingCourses    PendingCourse[]
+}
+
+model CompletedCourse {
+  id       String  @id @default(cuid())
+  name     String
+  grade    String
+  user     User    @relation(fields: [userId], references: [username])
+  userId   String
+}
+
+model InProgressCourse {
+  id       String  @id @default(cuid())
+  name     String
+  user     User    @relation(fields: [userId], references: [username])
+  userId   String
+}
+
+model PendingCourse {
+  id       String  @id @default(cuid())
+  name     String
+  user     User    @relation(fields: [userId], references: [username])
+  userId   String
+}
+

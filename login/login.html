@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - QU Student Application</title>
+    <link rel="stylesheet" href="login.css">
+
+</head>
+
+<body>
+    <header class="header">
+        <nav>
+            <img class="Qulogo" src="Qulogo.jpg"><img />
+            <h1>Welcome to Qu Student platform</h1>
+        </nav>
+    </header>
+    <main class="container">
+        <section class="login-section">
+            <h2 class="txt1">login</h2>
+            <form id="login-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                <label for="password">
+                    Password:
+                    <span id="togglePassword"
+                        style="cursor: pointer; color: #7a1c32; font-weight: bold; margin-left: 10px;">Show</span>
+                </label>
+                <input type="password" id="password" name="password" required><br><br>
+                <button type="submit">Login</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 QU Student Application</p>
+    </footer>
+    <script src="login.js"></script>
+</body>
+
+</html>

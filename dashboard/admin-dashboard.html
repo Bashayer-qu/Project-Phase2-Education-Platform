@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <h1>Welcome, <span id="adminName"></span></h1>
+        <button onclick="logout()">Logout</button>
+    </header>
+
+    <main>
+        <h2>Assign Instructors to Courses</h2>
+        <button onclick="window.location.href='weekly-schedule.html'">View Weekly Schedule</button>
+        <div id="assignmentContainer"></div>
+
+        <h2>Pending Course Approvals</h2>
+        <div id="pendingApprovalsContainer"></div>
+
+        <h2>All Courses</h2>
+        <div id="courseListContainer"></div>
+
+        <h2>Create New Course</h2>
+        <form id="newCourseForm">
+            <input type="text" id="newCourseName" placeholder="Course Name" required><br><br>
+            <input type="text" id="newCourseCategory" placeholder="Category" required><br><br>
+            <button type="submit">Add Course</button>
+        </form>
+    </main>
+
+    <script>
+        let courses = [];
+        let users = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const admin = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!admin || admin.role !== "admin") {
+                alert("Access Denied! Redirecting to login...");
+                window.location.href = "../login/login.html";
+                return;
+            }
+
+            document.getElementById("adminName").textContent = admin.name;
+
+            fetch("../courses.json")
+                .then(res => res.json())
+                .then(courseData => {
+                    courses = courseData;
+                    return fetch("../users.json");
+                })
+                .then(res => res.json())
+                .then(userData => {
+                    users = userData;
+                    sessionStorage.setItem("allCourses", JSON.stringify(courses));
+                    sessionStorage.setItem("allUsers", JSON.stringify(users));
+                    displayAssignments();
+                    displayPendingApprovals(users);
+                    displayCourses();
+                });
+
+            document.getElementById("newCourseForm").addEventListener("submit", createCourse);
+        });
+
+        function displayAssignments() {
+            const container = document.getElementById("assignmentContainer");
+            container.innerHTML = "";
+
+            const instructors = users.filter(u => u.role === "instructor");
+
+            courses.forEach(course => {
+                const div = document.createElement("div");
+                div.style.marginBottom = "20px";
+                div.innerHTML = `<h3>${course.name}</h3>
+                    <p>Assigned Instructor: <strong>${course.assignedInstructor}</strong></p>`;
+
+                if (course.assignedInstructor === "To be assigned") {
+                    const select = document.createElement("select");
+                    instructors.forEach(inst => {
+                        const option = document.createElement("option");
+                        option.value = inst.username;
+                        option.textContent = inst.name + " " + inst.surname;
+                        select.appendChild(option);
+                    });
+
+                    const assignBtn = document.createElement("button");
+                    assignBtn.textContent = "Assign";
+                    assignBtn.style.marginLeft = "10px";
+                    assignBtn.onclick = () => assignInstructor(course.id, select.value, instructors);
+
+                    div.appendChild(select);
+                    div.appendChild(assignBtn);
+                }
+
+                container.appendChild(div);
+            });
+        }
+
+        function assignInstructor(courseId, instructorUsername, instructors) {
+            const course = courses.find(c => c.id === courseId);
+            const instructor = instructors.find(i => i.username === instructorUsername);
+
+            course.assignedInstructor = instructor.name + " " + instructor.surname;
+            course.openForRegistration = true;
+
+            sessionStorage.setItem("allCourses", JSON.stringify(courses));
+            alert(`Assigned ${instructor.name} to ${course.name}. Course is now open for registration.`);
+            displayAssignments();
+            displayCourses();
+        }
+
+        function displayPendingApprovals(users) {
+            const container = document.getElementById("pendingApprovalsContainer");
+            container.innerHTML = "";
+
+            const pendingStudents = users.filter(user =>
+                user.role === "student" && user.pendingCourses && user.pendingCourses.length > 0
+            );
+
+            if (pendingStudents.length === 0) {
+                container.innerHTML = "<p>No pending course registrations.</p>";
+            } else {
+                pendingStudents.forEach(student => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `<h3>${student.name} ${student.surname}</h3>`;
+
+                    student.pendingCourses.forEach(course => {
+                        const courseDiv = document.createElement("div");
+                        courseDiv.innerHTML = `
+                    ${course.name} 
+                    <button onclick="approveCourse('${student.username}', '${course.name}')">Approve</button>
+                    <button onclick="rejectCourse('${student.username}', '${course.name}')">Reject</button>
+                `;
+                        div.appendChild(courseDiv);
+                    });
+
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        function approveCourse(username, courseName) {
+            let users = JSON.parse(sessionStorage.getItem("allUsers"));
+            const user = users.find(u => u.username === username);
+
+            const courseIndex = user.pendingCourses.findIndex(c => c.name === courseName);
+            if (courseIndex !== -1) {
+                const course = user.pendingCourses.splice(courseIndex, 1)[0];
+                user.inProgressCourses.push(course);
+                alert(`Approved ${courseName} for ${user.name}.`);
+            }
+
+            sessionStorage.setItem("allUsers", JSON.stringify(users));
+            displayPendingApprovals(users);
+        }
+
+        function rejectCourse(username, courseName) {
+            let users = JSON.parse(sessionStorage.getItem("allUsers"));
+            const user = users.find(u => u.username === username);
+
+            user.pendingCourses = user.pendingCourses.filter(c => c.name !== courseName);
+            alert(`Rejected ${courseName} for ${user.name}.`);
+
+            sessionStorage.setItem("allUsers", JSON.stringify(users));
+            displayPendingApprovals(users);
+        }
+
+        function displayCourses() {
+            const container = document.getElementById("courseListContainer");
+            container.innerHTML = "";
+
+            courses.forEach(course => {
+                const div = document.createElement("div");
+                div.style.border = "1px solid #ccc";
+                div.style.padding = "10px";
+                div.style.marginBottom = "10px";
+
+                div.innerHTML = `
+                    <strong>${course.name}</strong> (${course.category})<br>
+                    Instructor: ${course.assignedInstructor}<br>
+                    Status: ${course.openForRegistration ? "Open for Registration" : "Waiting for Assignment"}<br>
+                    Enrolled: ${course.enrolled}/${course.capacity}<br><br>
+                `;
+
+                if (course.enrolled >= 5 && !course.validated) {
+                    const approveBtn = document.createElement("button");
+                    approveBtn.textContent = "Validate Course";
+                    approveBtn.onclick = () => validateCourse(course.id);
+                    div.appendChild(approveBtn);
+                } else if (course.enrolled < 5 && !course.validated) {
+                    const cancelBtn = document.createElement("button");
+                    cancelBtn.textContent = "Cancel Course";
+                    cancelBtn.onclick = () => cancelCourse(course.id);
+                    div.appendChild(cancelBtn);
+                } else if (course.validated) {
+                    div.innerHTML += "<p>✅ Course Validated</p>";
+                }
+
+                container.appendChild(div);
+            });
+        }
+
+        function validateCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            course.validated = true;
+            sessionStorage.setItem("allCourses", JSON.stringify(courses));
+            alert(`Course ${course.name} has been validated and can now start.`);
+            displayCourses();
+        }
+
+        function cancelCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            course.validated = false;
+            course.openForRegistration = false;
+            sessionStorage.setItem("allCourses", JSON.stringify(courses));
+            alert(`Course ${course.name} has been canceled.`);
+            displayCourses();
+        }
+
+        function createCourse(event) {
+            event.preventDefault();
+            const name = document.getElementById("newCourseName").value.trim();
+            const category = document.getElementById("newCourseCategory").value.trim();
+
+            if (name && category) {
+                const newCourse = {
+                    id: courses.length + 1,
+                    name: name,
+                    category: category,
+                    prerequisites: [],
+                    openForRegistration: false,
+                    assignedInstructor: "To be assigned",
+                    capacity: 30,
+                    enrolled: 0
+                };
+
+                courses.push(newCourse);
+                sessionStorage.setItem("allCourses", JSON.stringify(courses));
+                alert(`New course "${name}" created successfully!`);
+                document.getElementById("newCourseForm").reset();
+                displayCourses();
+                displayAssignments();
+            } else {
+                alert("Please fill in all fields to create a course.");
+            }
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            alert("You have been logged out.");
+            window.location.href = "../login/login.html";
+        }
+    </script>
+</body>
+
+</html>

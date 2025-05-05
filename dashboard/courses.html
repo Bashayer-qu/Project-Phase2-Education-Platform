@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Courses</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <h1>Available Courses</h1>
+        <button onclick="logout()">Logout</button>
+    </header>
+
+    <main>
+        <input type="text" id="searchInput" placeholder="Search by name...">
+        <select id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="Programming">Programming</option>
+            <option value="Databases">Databases</option>
+            <option value="Systems">Systems</option>
+        </select>
+
+        <ul id="courseList"></ul>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!user) {
+                alert("Access denied. Redirecting to login...");
+                window.location.href = "../login/login.html";
+                return;
+            }
+
+            const courseList = document.getElementById("courseList");
+            const searchInput = document.getElementById("searchInput");
+            const categoryFilter = document.getElementById("categoryFilter");
+
+            let courses = [];
+
+            fetch("../courses.json")
+                .then(response => response.json())
+                .then(data => {
+                    courses = data;
+                    displayCourses(courses);
+                })
+                .catch(error => {
+                    console.error("Error loading courses:", error);
+                    courseList.innerHTML = "<li>Error loading courses.</li>";
+                });
+
+            function displayCourses(filteredCourses) {
+                courseList.innerHTML = "";
+                if (filteredCourses.length === 0) {
+                    courseList.innerHTML = "<li>No courses found.</li>";
+                    return;
+                }
+                filteredCourses.forEach(course => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <strong>${course.name}</strong> (${course.category})<br>
+                        Instructor: ${course.instructor}<br>
+                        Open: ${course.openForRegistration ? "Yes" : "No"}<br>
+                        Capacity: ${course.enrolled}/${course.capacity}
+                    `;
+
+                    // If user is student, show register button
+                    if (user.role === "student" && course.openForRegistration) {
+                        const registerBtn = document.createElement("button");
+                        registerBtn.textContent = "Register";
+                        registerBtn.onclick = () => registerCourse(course);
+                        li.appendChild(document.createElement("br"));
+                        li.appendChild(registerBtn);
+                    }
+
+                    courseList.appendChild(li);
+                });
+            }
+
+            function filterCourses() {
+                const query = searchInput.value.toLowerCase();
+                const selectedCategory = categoryFilter.value;
+
+                const filtered = courses.filter(course =>
+                    course.name.toLowerCase().includes(query) &&
+                    (selectedCategory === "" || course.category === selectedCategory)
+                );
+
+                displayCourses(filtered);
+            }
+
+            searchInput.addEventListener("input", filterCourses);
+            categoryFilter.addEventListener("change", filterCourses);
+
+            function registerCourse(course) {
+                // Check if already registered
+                const alreadyPending = user.pendingCourses.some(c => c.name === course.name);
+                const alreadyInProgress = user.inProgressCourses.some(c => c.name === course.name);
+                const alreadyCompleted = user.completedCourses.some(c => c.name === course.name);
+
+                if (alreadyPending || alreadyInProgress || alreadyCompleted) {
+                    alert(`You have already registered for or completed ${course.name}.`);
+                    return;
+                }
+
+                // Check prerequisites
+                const completedNames = user.completedCourses.map(c => c.name);
+                const unmet = course.prerequisites.filter(pr => !completedNames.includes(pr));
+
+                if (unmet.length > 0) {
+                    alert(`You must complete prerequisites first: ${unmet.join(", ")}`);
+                    return;
+                }
+
+                // Check capacity
+                if (course.enrolled >= course.capacity) {
+                    alert(`No seats available in ${course.name}.`);
+                    return;
+                }
+
+                // Register the student
+                user.pendingCourses.push({ name: course.name });
+
+                // Update allUsers list (global users list)
+                let users = JSON.parse(sessionStorage.getItem("allUsers"));
+                const currentUserIndex = users.findIndex(u => u.username === user.username);
+                if (currentUserIndex !== -1) {
+                    users[currentUserIndex] = user;
+                    sessionStorage.setItem("allUsers", JSON.stringify(users));
+                }
+
+                // Update course enrolled number
+                course.enrolled += 1;
+
+                // Save user session
+                sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+
+                // Save courses session
+                sessionStorage.setItem("allCourses", JSON.stringify(courses));
+
+                alert(`Registered for ${course.name}. Awaiting admin approval.`);
+
+            }
+
+            function logout() {
+                sessionStorage.clear();
+                alert("You have been logged out.");
+                window.location.href = "../login/login.html";
+            }
+        });
+    </script>
+
+</body>
+
+</html>

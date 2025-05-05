@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Path</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <h1 id="student">'s Learning Path</h1>
+    </header>
+
+    <main>
+        <h2>Completed Courses:</h2>
+        <ul id="completedCourses"></ul>
+
+        <h2>In-Progress Courses:</h2>
+        <ul id="inProgressCourses"></ul>
+
+        <h2>Pending Courses:</h2>
+        <ul id="pendingCourses"></ul>
+    </main>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            document.getElementById("student").innerHTML = user.name + "'s Learning Path";
+
+            function getArray(array, type) {
+                const list = document.getElementById(type);
+                if (array.length === 0) {
+                    list.innerHTML = "<li>No  courses yet.</li>";
+                } else {
+                    if (type == 'completedCourses') {
+                        array.forEach(course => {
+                            const listItem = document.createElement("li");
+                            listItem.innerHTML = course.name + " - Grade: " + course.grade;
+                            list.appendChild(listItem);
+                        });
+                    } else {
+                        array.forEach(course => {
+                            const listItem = document.createElement("li");
+                            listItem.innerHTML = course.name;
+                            list.appendChild(listItem);
+                        });
+
+                    }
+                }
+            }
+
+            getArray(user.completedCourses, "completedCourses");
+            getArray(user.inProgressCourses, "inProgressCourses");
+            getArray(user.pendingCourses, "pendingCourses");
+
+
+        });
+    </script>
+</body>
+
+</html>
