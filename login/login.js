@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Login script loaded");
 
@@ -29,26 +28,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const username = document.getElementById("username").value.trim();
         const password = passwordInput.value.trim();
 
-        console.log("Username entered:", username);
-
         if (!username || !password) {
             alert("Please fill in both username and password.");
-            console.log("Error: Empty fields");
             return;
         }
 
         try {
             console.log("Fetching users.json...");
-            const response = await fetch("../users.json");
+            const response = await fetch("../../app/data/users.json");
             if (!response.ok) throw new Error("Failed to load users.json");
 
             const users = await response.json();
-            console.log("Users fetched:", users);
 
             const user = users.find(u => u.username === username && u.password === password);
 
             if (user) {
-                console.log("User authenticated:", user);
                 sessionStorage.setItem("loggedInUser", JSON.stringify(user));
 
                 const redirectMap = {
@@ -60,10 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = redirectMap[user.role] || "../login/login.html";
             } else {
                 alert("Invalid username or password. Please try again.");
-                console.log("Error: Invalid credentials");
             }
         } catch (error) {
-            console.error("Error fetching users:", error);
+            console.error("Login error:", error);
             alert("An error occurred while logging in. Please try again later.");
         }
     });

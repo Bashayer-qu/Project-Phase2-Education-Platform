@@ -1,40 +1,69 @@
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
 import path from 'path';
+import fs from 'fs/promises';
 
+const prisma = new PrismaClient();
 
-const usersFilePath = path.join(process.cwd(), 'app/data/users.json');
-const courseFilePath = path.join(process.cwd(), 'app/data/courses.json');
-async function seed(params) {
-    console.log("Seeding started...");
-    const users = await fetch(usersFilePath);
-    for (const user of users) {
+async function seed() {
+  console.log("Seeding started...");
 
-        await prisma.user.create({
-            data: user
-        });
-    }
+  const usersFilePath = path.join(process.cwd(), 'app/data/users.json');
+  const coursesFilePath = path.join(process.cwd(), 'app/data/courses.json');
 
-    const courses = await fetch(courseFilePath);
+  const users = JSON.parse(await fs.readFile(usersFilePath, 'utf-8'));
+  const courses = JSON.parse(await fs.readFile(coursesFilePath, 'utf-8'));
 
-    for (const course of courses) {
-        await prisma.course.create({
-            data: course
-        });
-    }
-    console.log("Seeding completed successfully!");
+  // Seed courses
+  for (const course of courses) {
+    const { prerequisites, schedule, ...courseData } = course;
 
+    await prisma.course.create({
+      data: {
+        ...courseData,
+        prerequisites: prerequisites?.length
+          ? { create: prerequisites }
+          : undefined,
+        schedule: schedule?.length
+          ? { create: schedule }
+          : undefined
+      }
+    });
+  }
 
+  // Seed users
+  for (const user of users) {
+    const {
+      completedCourses,
+      inProgressCourses,
+      pendingCourses,
+      assignedCourses, // ignored
+      ...userData
+    } = user;
 
+    await prisma.user.create({
+      data: {
+        ...userData,
+        completedCourses: completedCourses?.length
+          ? { create: completedCourses }
+          : undefined,
+        inProgressCourses: inProgressCourses?.length
+          ? { create: inProgressCourses }
+          : undefined,
+        pendingCourses: pendingCourses?.length
+          ? { create: pendingCourses }
+          : undefined
+      }
+    });
+  }
 
+  console.log("Seeding completed successfully!");
 }
 
-seed().catch((e) => {
-    console.error(e);
-
-}).finally(async () => {
+seed()
+  .catch((e) => {
+    console.error("Seeding failed:", e);
+  })
+  .finally(async () => {
     await prisma.$disconnect();
-    console.log("Seeding Completed.");
-})
-
-
+    console.log("Prisma disconnected.");
+  });
