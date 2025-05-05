@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const data = await response.json();
 
-    // Display user roles
     rolesContainer.innerHTML = "";
     for (const role in data.userRoles) {
       const p = document.createElement("p");
@@ -17,7 +16,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       rolesContainer.appendChild(p);
     }
 
-    // Display top courses
     topCoursesContainer.innerHTML = "";
     data.topCourses.forEach(course => {
       const p = document.createElement("p");
@@ -25,7 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       topCoursesContainer.appendChild(p);
     });
 
-    // Display failing count
     failingContainer.textContent = `Total failing students: ${data.failingStudents}`;
 
   } catch (error) {

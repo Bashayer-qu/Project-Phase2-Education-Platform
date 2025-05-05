@@ -1,9 +1,7 @@
-// This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -11,9 +9,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Course {
-  id                  Int              @id @default(autoincrement())
+  id                  Int            @id @default(autoincrement())
   name                String
   category            String
   prerequisites       Prerequisite[]
@@ -25,24 +22,24 @@ model Course {
 }
 
 model Schedule {
-  id        Int     @id @default(autoincrement())
-  day       String
-  time      String
-  courseId  Int
-  course    Course  @relation(fields: [courseId], references: [id])
+  id       Int    @id @default(autoincrement())
+  day      String
+  time     String
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
 }
 
 model Prerequisite {
-  id        Int     @id @default(autoincrement())
-  name      String
-  courseId  Int
-  course    Course  @relation(fields: [courseId], references: [id])
+  id       Int    @id @default(autoincrement())
+  name     String
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
 }
 
 model User {
   name              String
   surname           String
-  username          String              @id @default(cuid())
+  username          String             @id @default(cuid())
   password          String
   role              String
   completedCourses  CompletedCourse[]
@@ -51,24 +48,23 @@ model User {
 }
 
 model CompletedCourse {
-  id       String  @id @default(cuid())
-  name     String
-  grade    String
-  user     User    @relation(fields: [userId], references: [username])
-  userId   String
+  id     String @id @default(cuid())
+  name   String
+  grade  String
+  user   User   @relation(fields: [userId], references: [username])
+  userId String
 }
 
 model InProgressCourse {
-  id       String  @id @default(cuid())
-  name     String
-  user     User    @relation(fields: [userId], references: [username])
-  userId   String
+  id     String @id @default(cuid())
+  name   String
+  user   User   @relation(fields: [userId], references: [username])
+  userId String
 }
 
 model PendingCourse {
-  id       String  @id @default(cuid())
-  name     String
-  user     User    @relation(fields: [userId], references: [username])
-  userId   String
+  id     String @id @default(cuid())
+  name   String
+  user   User   @relation(fields: [userId], references: [username])
+  userId String
 }
-

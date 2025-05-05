@@ -22,8 +22,6 @@
         <div id="courseContainer"></div>
     </main>
 
-
-
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const instructor = JSON.parse(sessionStorage.getItem("loggedInUser"));
@@ -34,7 +32,6 @@
             }
             document.getElementById("instructorName").innerHTML = "Welcome, " + instructor.name;
 
-            // Load users and courses
             fetch("../users.json")
                 .then(res => res.json())
                 .then(users => {
@@ -48,7 +45,6 @@
                 });
         });
 
-        // Display teaching schedule
         function displaySchedule(courses, instructor) {
             const scheduleList = document.getElementById("scheduleList");
             const myCourses = courses.filter(course => course.assignedInstructor === instructor.name + " " + instructor.surname);
@@ -70,8 +66,6 @@
             }
         }
 
-
-        // Display grade submission table
         function displayCourses(users, instructor, courses) {
             const courseDiv = document.getElementById("courseContainer");
             courseDiv.innerHTML = "";
@@ -141,7 +135,6 @@
             sessionStorage.setItem("allUsers", JSON.stringify(users));
             alert(`Grade submitted for ${user.name}: ${grade}`);
 
-            // Refresh only grade table, not full page
             fetch("../courses.json")
                 .then(res => res.json())
                 .then(courses => {

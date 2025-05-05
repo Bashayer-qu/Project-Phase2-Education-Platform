@@ -13,7 +13,6 @@ async function seed() {
   const users = JSON.parse(await fs.readFile(usersFilePath, 'utf-8'));
   const courses = JSON.parse(await fs.readFile(coursesFilePath, 'utf-8'));
 
-  // Seed courses
   for (const course of courses) {
     const { prerequisites, schedule, ...courseData } = course;
 
@@ -30,13 +29,12 @@ async function seed() {
     });
   }
 
-  // Seed users
   for (const user of users) {
     const {
       completedCourses,
       inProgressCourses,
       pendingCourses,
-      assignedCourses, // ignored
+      assignedCourses,
       ...userData
     } = user;
 

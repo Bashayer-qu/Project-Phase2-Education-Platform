@@ -3,7 +3,6 @@ const prisma = new PrismaClient()
 
 class PrerequisiteRepo {
 
-  // Get all prerequisites
   async getAllPrerequisites() {
     return await prisma.prerequisite.findMany({
       include: {
@@ -12,7 +11,6 @@ class PrerequisiteRepo {
     })
   }
 
-  // Get prerequisites for a specific course
   async getPrerequisitesByCourseId(courseId) {
     return await prisma.prerequisite.findMany({
       where: { course: { id: parseInt(courseId) } },
@@ -22,7 +20,6 @@ class PrerequisiteRepo {
     })
   }
 
-  // Get a prerequisite by its ID
   async getPrerequisiteById(prerequisiteId) {
     return await prisma.prerequisite.findUnique({
       where: { userId: parseInt(prerequisiteId) },
@@ -32,12 +29,10 @@ class PrerequisiteRepo {
     })
   }
 
-  // Create a new prerequisite
   async createPrerequisite(data) {
     return await prisma.prerequisite.create({ data })
   }
 
-  // Update a prerequisite
   async updatePrerequisite(prerequisiteId, data) {
     return await prisma.prerequisite.update({
       where: { userId: parseInt(prerequisiteId) },
@@ -45,7 +40,6 @@ class PrerequisiteRepo {
     })
   }
 
-  // Delete a prerequisite
   async deletePrerequisite(prerequisiteId) {
     return await prisma.prerequisite.delete({
       where: { userId: parseInt(prerequisiteId) }
