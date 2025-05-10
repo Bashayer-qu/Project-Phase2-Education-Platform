@@ -8,6 +8,15 @@
 </head>
 
 <body>
+  <script>
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.user) {
+          window.location.href = '/login/login.html';
+        }
+      });
+  </script>
   <main class="container">
     <h1>📊 Statistics Dashboard</h1>
 
